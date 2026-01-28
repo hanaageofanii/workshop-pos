@@ -15,13 +15,20 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
+        // COOKIE
         $middleware->append(\App\Http\Middleware\EncryptCookies::class);
         $middleware->append(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
 
+        // SESSION
         $middleware->append(\Illuminate\Session\Middleware\StartSession::class);
 
-        $middleware->append(VerifyCsrfToken::class);
+        // 🔥 INI YANG KAMU KELEWAT (PENTING BANGET)
+        $middleware->append(\Illuminate\View\Middleware\ShareErrorsFromSession::class);
 
+        // CSRF
+        // $middleware->append(VerifyCsrfToken::class);
+
+        // ALIAS
         $middleware->alias([
             'auth.custom' => AuthMiddleware::class,
             'role'        => RoleMiddleware::class,

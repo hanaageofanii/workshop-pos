@@ -14,31 +14,39 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
+public function login(Request $request)
+{
+    $request->validate([
+        'username' => 'required',
+        'password' => 'required',
+    ], [
+        'username.required' => 'Username wajib diisi',
+        'password.required' => 'Password wajib diisi',
+    ]);
 
-        $user = User::where('username', $request->username)->first();
+    $user = User::where('username', $request->username)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Username / Password salah');
-        }
-
-        session([
-            'user' => [
-                'id'   => $user->id,
-                'name' => $user->name,
-                'role' => $user->role,
-            ]
-        ]);
-
-        return $user->role === 'admin'
-            ? redirect('/admin')
-            : redirect('/kasir');
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return back()
+            ->withInput()
+            ->withErrors([
+                'password' => 'Username atau password tidak sesuai'
+            ]);
     }
+
+    session([
+        'user' => [
+            'id'   => $user->id,
+            'username' => $user->username,
+            'role' => $user->role,
+        ]
+    ]);
+
+    return $user->role === 'admin'
+        ? redirect('/admin')
+        : redirect('/kasir');
+}
+
 
     public function logout()
     {

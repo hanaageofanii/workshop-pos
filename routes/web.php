@@ -19,9 +19,17 @@ Route::get('/', function () {
 | AUTH
 |--------------------------------------------------------------------------
 */
-Route::get('/login', [LoginController::class, 'form'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::get('/logout', [LoginController::class, 'logout']);
+
+
+    Route::get('/login', [LoginController::class, 'form'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/logout', [LoginController::class, 'logout']);
+
+
+Route::get('/test-session', function () {
+    session(['test' => 'oke']);
+    return redirect('/login');
+});
 
 /*
 |--------------------------------------------------------------------------
